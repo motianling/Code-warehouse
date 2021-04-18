@@ -70,5 +70,4 @@ int main ( ) {
       cout << query(1,x,y) << endl ;
     }
   }
-  system("pause") ;
 }
