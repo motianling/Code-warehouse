@@ -1,0 +1,57 @@
+#include <iostream>
+#include <cstdio>
+#include <algorithm>
+
+using namespace std ;
+
+const int N = 1e6 + 5 ;
+int fa[N] ;
+int n ;
+struct node {
+  int date,sum ;
+}home[N] ;
+
+int find(int x) {
+  if(fa[x]==x) return x ;
+  return fa[x] = find(fa[x]) ;
+}
+  
+int cmp(node a,node b) {
+  return a.sum>b.sum ;
+}
+
+int main ( ) {
+
+  cin >> n ;
+  for ( int i = 0 ; i <= 700005 ; i ++ ) {
+    fa[i] = i ;
+  }
+
+  for ( int i = 1 ; i <= n ; i ++ ) {
+    cin >> home[i].date >> home[i].sum ;
+  }
+
+  sort(home+1,home+n+1,cmp) ;
+
+  long long ans = 0 ;
+
+  for ( int i = 1 ; i <= n ; i ++ ) {
+    int day = home[i].date ;
+    int num = home[i].sum ;
+    if(fa[day]==day) {
+      fa[day] = fa[find(day-1)] ;//连接上一个节点
+      ans += num ;
+    }
+    else {
+      int u = find(day) ;
+      if(u!=0) {
+        ans += num ;
+        fa[u] = fa[find(u-1)]; 
+      }
+    }
+  }
+
+  cout << ans ;
+  
+    return 0 ;
+}
