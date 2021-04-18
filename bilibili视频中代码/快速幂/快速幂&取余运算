@@ -1,0 +1,49 @@
+#include <bits/stdc++.h>
+#pragma GCC optimize(2)
+using namespace std;
+const int N=10005;
+
+//快读不要在意
+
+int read()
+{
+    int x=0,f=1;
+    char ch=getchar();
+    while(ch<'0'||ch>'9'){
+        if(ch=='-')
+            f=-1;
+        ch=getchar();
+    }
+    while(ch>='0'&&ch<='9'){
+        x=(x<<1)+(x<<3)+(ch^48);
+        ch=getchar();
+    }
+    return x*f;
+}
+int write(int X)
+{
+	if(X<0) {putchar('-'); X=~(X-1);}
+	int s[20],top=0;
+	while(X) {s[++top]=X%10; X/=10;}
+	if(!top) s[++top]=0;
+	while(top) putchar(s[top--]+'0');
+}
+unsigned long long b,p,k;
+unsigned long long qpow(int b,int q,int k)
+{
+	if(q==0)return 1;
+	if(q%2==0)return qpow(b,q/2,k)%k*qpow(b,q/2,k)%k;
+	else return qpow(b,q-1,k)*b%k;
+}
+int main()
+{
+//	freopen(".in","r",stdin);
+//	freopen(".out","w",stdout);
+	b=read();
+	p=read();
+	k=read();
+	printf("%d^%d mod %d=",b,p,k);
+	cout<<qpow(b,p,k)%k;
+  // system("pause") ;
+	return 0;
+}
