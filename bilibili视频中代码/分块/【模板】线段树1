@@ -1,0 +1,104 @@
+#include <iostream>
+#include <cstdio>
+#include <cmath>
+
+using namespace std ;
+
+const int maxn = 1e6+5 ;
+int n , q ;
+int a[maxn] ;
+
+long long bel[maxn] ;//计算每个元素所属区间号
+long long head[maxn] ;//分块头
+long long tail[maxn] ;//分块尾
+long long sum[maxn] ;
+long long mark[maxn] ;
+
+void add (int l ,int r,int k) {
+  if(bel[l]==bel[r]) {
+    for ( int i = l ; i <= r ; i ++ ) {
+      a[i] += k ;
+      sum[bel[i]]+=k ;
+    }
+    return ;
+  }
+  for ( int i = bel[l] + 1 ; i <= bel[r]-1 ; i ++ ) {
+    mark[i] += k ;
+  }
+  for ( int i = l ; i <= tail[bel[l]] ; i ++ ) {
+    a[i] += k ;
+    sum[bel[i]]+=k ;
+  }
+  for ( int i = head[bel[r]] ; i <= r ; i ++ ) {
+    a[i] += k ;
+    sum[bel[i]]+=k ;
+  }
+}
+
+long long query (int l , int r) {
+  if(bel[l]==bel[r]) {
+    long long res = 0 ;
+    for ( int i = l ; i <= r ; i ++ ) {
+      res += a[i] ;
+    }
+    return res+(r-l+1)*mark[bel[l]] ;
+  }
+  long long ans = 0 ;
+  for(int i=l;i<=tail[bel[l]];i++) ans+=a[i]+mark[bel[i]];
+  for(int i=bel[l]+1;i<=bel[r]-1;i++) ans+=sum[i]+mark[i]*(tail[bel[i]]-head[bel[i]]+1);
+  for(int i=head[bel[r]];i<=r;i++) ans+=a[i]+mark[bel[i]];
+  return ans ;  
+}
+  
+int main ( ) {
+  #ifndef ONLINE_JUDGE
+    //freopen("input.in","r",stdin) ;
+    //freopen("output.out","w",stdout) ;
+  #endif
+
+  cin >> n >> q ;
+
+  ios::sync_with_stdio(false);
+
+  int size = sqrt(n) ;
+
+  for ( int i = 1 ; i <= size ; i ++ ) {
+    head[i] = (i-1) * size + 1 ;
+    tail[i] = i * size ;
+  }
+
+  tail[size] = n ;
+
+  for ( int i = 1 ; i <= n ; i ++ ) {
+    cin >> a[i] ;
+  }
+
+  for ( int i = 1 ; i <= size ; i ++ ) {
+    for ( int j = head[i] ; j <= tail[i] ; j ++ ) {
+      sum[i] += a[j] ;
+      bel[j] = i ;
+    }
+  }
+
+  // for ( int i = 1 ; i <= n ; i ++ ) {
+  //   cout << bel[i] << " " ;
+  // }
+
+  while(q--) {
+    int opt , l , r , k ;
+    cin >> opt ;
+    if(opt==1) {
+      cin >> l >> r >> k ;
+      add(l,r,k) ;
+    }
+    else {
+      cin >> l >> r ;
+      cout << query(l,r) << endl ;
+    }
+  }
+  
+  #ifndef ONLINE_JUDGE
+    system("pause") ;
+  #endif
+    return 0 ;
+}
